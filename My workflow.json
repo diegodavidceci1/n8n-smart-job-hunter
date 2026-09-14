@@ -1,0 +1,171 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c169d01b-3dd5-4ac9-baed-0303f18ea8f3",
+      "name": "Inicio Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "8744270300",
+        "text": "=📌 *{{ $json.titulo }}*\n🏢 Empresa: {{ $json.empresa }}\n🌍 Ubicación: {{ $json.ubicacion }}\n🔗 {{ $json.enlace }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "bbac39c9-5e62-4ad0-9118-fcff6723ff68",
+      "name": "Enviar a Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        352,
+        32
+      ],
+      "webhookId": "74a3acd4-ceb8-4e63-bc67-5e9c4e13466d",
+      "credentials": {
+        "telegramApi": {
+          "id": "tcKatsjqTSlUfrnR",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const resultados = [];\nconst palabrasClave = [\"n8n\", \"make\", \"integromat\", \"zapier\", \"workflow\", \"automation\"];\n\nfor (const item of items) {\n  const { titulo = \"\", ubicacion = \"\", descripcion = \"\" } = item.json;\n\n  const tituloLower = titulo.toLowerCase();\n  const ubicacionLower = ubicacion.toLowerCase();\n  const descripcionLower = descripcion.toLowerCase();\n\n  const cumpleUbicacion = ubicacionLower.includes(\"worldwide\") || ubicacionLower.includes(\"latam\");\n\n  const noEsSenior = !tituloLower.includes(\"senior\") && !tituloLower.includes(\"lead\") && !tituloLower.includes(\"director\");\n\n  const mencionaHerramienta = palabrasClave.some(palabra => descripcionLower.includes(palabra));\n\n  if (cumpleUbicacion && noEsSenior && mencionaHerramienta) {\n    resultados.push(item);\n  }\n}\n\nreturn resultados;"
+      },
+      "id": "fe0c9775-aec1-4111-b661-3471b53e8fe4",
+      "name": "Filtrar Ofertas Relevantes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const puestos = [\n  \"n8n Automation Specialist\",\n  \"Make Integration Developer\",\n  \"AI Automation Engineer\",\n  \"Backend Developer Junior\"\n];\n\nreturn puestos.map(puesto => ({\n  json: {\n    query: puesto\n  }\n}));"
+      },
+      "id": "27ed7c57-9ebb-44bd-a9f3-57db4c9ecb27",
+      "name": "Definir Puestos de Trabajo1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://remotive.com/api/remote-jobs",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "search",
+              "value": "={{ $json.query }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "eded5b3f-c4a2-4d65-8ab8-b88ad75cd647",
+      "name": "Buscar en Remotive1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const resultados = [];\n\nfor (const item of items) {\n  const jobs = item.json.jobs || [];\n  for (const job of jobs) {\n    resultados.push({\n      json: {\n        titulo: job.title || \"\",\n        empresa: job.company_name || \"\",\n        enlace: job.url || \"\",\n        ubicacion: job.candidate_required_location || \"\",\n        descripcion: job.description || \"\"\n      }\n    });\n  }\n}\n\nreturn resultados;"
+      },
+      "id": "773acef1-ca3f-4a50-bd56-d6279ea82486",
+      "name": "Procesar y Formatear Empleos1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        32
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Inicio Manual": {
+      "main": [
+        [
+          {
+            "node": "Definir Puestos de Trabajo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Ofertas Relevantes": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Definir Puestos de Trabajo1": {
+      "main": [
+        [
+          {
+            "node": "Buscar en Remotive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar en Remotive1": {
+      "main": [
+        [
+          {
+            "node": "Procesar y Formatear Empleos1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar y Formatear Empleos1": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Ofertas Relevantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "987472e6-b203-4264-a81e-a8121d61552c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8708aa3e9f888c38366425042e394d7ab5364c9bdb713c68f964c142b8283c55"
+  },
+  "id": "GIsVRWd7mbE5RJHk",
+  "tags": []
+}
