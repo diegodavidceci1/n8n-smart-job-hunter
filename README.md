@@ -15,3 +15,16 @@
 3. Configura tus credenciales de Telegram API y Groq, ¡y listo!
 
 
+
+---
+
+## 🛠️ Proyecto #2: Automatización de Leads (Formulario Web ➡️ Google Sheets ➡️ Telegram)
+Este es un flujo de nivel comercial diseñado exclusivamente para clientes freelance (inmobiliarias, agencias de marketing o e-commerce) que necesitan capturar contactos en su sitio web de forma automatizada.
+
+### ⚙️ Estructura del Flujo
+1. **Captura en Tiempo Real:** Nodo **Webhook** que recibe los datos del formulario (Nombre, Email, Teléfono, Mensaje) al instante.
+2. **Control de Calidad:** Nodo lógico **IF** que valida la estructura del correo electrónico para evitar datos falsos o spam.
+3. **Persistencia de Datos:** Nodo **Google Sheets** que inserta de forma ordenada cada nuevo contacto con su respectiva fecha y hora de registro.
+4. **Alerta de Venta Inmediata:** Nodo **Telegram** que le notifica al celular del dueño del negocio que tiene un nuevo cliente listo para ser atendido.
+
+*El archivo de este flujo está disponible en este repositorio bajo el nombre `formulario-a-sheets.json`.*
