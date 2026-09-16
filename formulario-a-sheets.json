@@ -1,0 +1,136 @@
+{
+  "name": "Proyecto 2 - Automatización de Leads (Webhook + Sheets + Telegram)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "capturar-lead",
+        "options": {}
+      },
+      "id": "p2-b001",
+      "name": "Webhook (Formulario Web)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [0, 240]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.email }}",
+              "operation": "contains",
+              "value2": "@"
+            }
+          ]
+        }
+      },
+      "id": "p2-b002",
+      "name": "Validar Email",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [240, 240]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "TU_SPREADSHEET_ID_AQUI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Hoja1",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nombre": "={{ $json.body.nombre }}",
+            "Email": "={{ $json.body.email }}",
+            "Telefono": "={{ $json.body.telefono }}",
+            "Mensaje": "={{ $json.body.mensaje }}",
+            "Fecha": "={{ $now.toISO() }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "p2-b003",
+      "name": "Guardar en Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [500, 140]
+    },
+    {
+      "parameters": {
+        "chatId": "TU_CHAT_ID_AQUI",
+        "text": "=🔥 *¡Nuevo Lead Capturado desde la Web!* \n\n👤 *Nombre:* {{ $('Validar Email').item.json.body.nombre }}\n📧 *Email:* {{ $('Validar Email').item.json.body.email }}\n📞 *Teléfono:* {{ $('Validar Email').item.json.body.telefono }}\n💬 *Mensaje:* {{ $('Validar Email').item.json.body.mensaje }}\n\n_Acción: El contacto ya fue guardado en tu Google Sheets en tiempo real._ 🚀",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "p2-b004",
+      "name": "Notificar Cliente por Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [760, 140]
+    },
+    {
+      "parameters": {
+        "chatId": "TU_CHAT_ID_AQUI",
+        "text": "=⚠️ *Alerta: Intento de registro inválido*\n\nSe recibió una solicitud desde el formulario web pero el correo electrónico electrónico no es válido.\n\n📥 *Datos recibidos:* {{ JSON.stringify($json.body) }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "p2-b005",
+      "name": "Alerta de Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [500, 360]
+    }
+  ],
+  "connections": {
+    "Webhook (Formulario Web)": {
+      "main": [
+        [
+          {
+            "node": "Validar Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Email": {
+      "main": [
+        [
+          {
+            "node": "Guardar en Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alerta de Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar en Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Notificar Cliente por Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
