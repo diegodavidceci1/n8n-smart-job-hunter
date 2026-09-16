@@ -1,21 +1,16 @@
-# 💼 Cazador de Empleo Inteligente - Automatización 24/7 con n8n e IA
+# 💼 Cazador de Empleo Inteligente con IA - n8n v1.111.0
 
-¡Bienvenido! Este es un sistema de automatización avanzado desarrollado de forma nativa en **n8n** y desplegado en la nube (**Render**). El robot trabaja en segundo plano las 24 horas del día buscando, filtrando y optimizando el proceso de postulación laboral en el mercado tecnológico global.
+¡Bienvenido! Este es un sistema de automatización avanzado desarrollado de forma nativa en **n8n** y desplegado en la nube (**Render**). El robot trabaja en segundo plano rastreando, filtrando y optimizando el proceso de postulación laboral en el mercado tecnológico de habla hispana.
 
 ## 🚀 Características del Sistema
-- **Rastreo Multiplataforma:** Conexión en paralelo vía API y RSS a fuentes globales como Remotive, Arbeitnow y We Work Remotely.
-- **Filtro Inteligente:** Algoritmos de filtrado avanzado (lógica OR/AND) que eliminan ofertas irrelevantes (Senior/Lead) y priorizan palabras clave (n8n, Make, Zapier, Automation).
-- **Redacción Automatizada con IA:** Integración con modelos de lenguaje para redactar una *Cover Letter* (carta de presentación) corta y personalizada según la descripción de cada puesto.
-- **Notificaciones en Tiempo Real:** Envío de alertas estructuradas directo a un canal privado de **Telegram**.
-
-## 🛠️ Tecnologías Utilizadas
-- **n8n v1.111.0** (Motor de flujos de trabajo)
-- **PostgreSQL (Neon.tech)** (Base de datos persistente en la nube)
-- **UptimeRobot** (Sistema de monitoreo para garantizar disponibilidad 24/7)
-- **Docker** (Contenedorización para despliegue en Render)
+- **Rastreo Multiplataforma:** Conexión en paralelo vía canales RSS avanzados y APIs a fuentes líderes del mercado hispano (InfoJobs, Tecnoempleo, Computrabajo, Domestika y LinkedIn en español).
+- **Filtro Inteligente de Oro:** Script avanzado en JavaScript que elimina duplicados por enlace, descarta de raíz puestos jerárquicos o que exijan inglés avanzado, y prioriza vacantes 100% accesibles de nivel inicial (Junior, Trainee, Becario, Prácticas o Sin Experiencia).
+- **Redacción Automatizada con IA:** Integración directa con la API oficial de **Groq (openai/gpt-oss-120b)** para redactar cartas de presentación (Cover Letters) personalizadas de 2 párrafos en español, honestas y enfocadas en el dominio de n8n.
+- **Notificaciones en Tiempo Real:** Envío de alertas estructuradas y formateadas en Markdown directo a un canal privado de **Telegram**.
+- **Blindaje de Producción:** Configuración avanzada de reintentos automáticos (Retry on Fail) con retraso de tiempo para gestionar de forma autónoma los límites de velocidad (Rate Limits) de las APIs en sus capas gratuitas.
 
 ## 📦 Cómo replicar este flujo
-1. Descarga el archivo `flujo.json` de este repositorio.
+1. Descarga el archivo `Mi flujo de trabajo.json` de este repositorio.
 2. Impórtalo en tu instancia de n8n.
-3. Configura tus credenciales de Telegram API y ¡listo!
+3. Configura tus credenciales de Telegram API y Groq, ¡y listo!
 
